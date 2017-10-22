@@ -8,7 +8,7 @@
 		</div>
 	    
 		<div class="container">
-			<form action="/keluarga/tambah/submit" method="post">
+			<form th:action="'/keluarga/tambah/' + ${keluarga.nomor_kk}" method="post">
 				<div class="form-group">
 					<label for="alamat"> Nama </label> 
 					<input class="form-control" type="text" name="alamat" placeholder="Ex: Jalan Ir. Juanda No. 2"  required="true" />

@@ -2,7 +2,6 @@ package com.example.controller;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import javax.validation.Valid;
 
@@ -53,7 +52,7 @@ public class KeluargaController {
     }
 
 
-    @RequestMapping(value = "/keluarga/tambah/submit", method = RequestMethod.POST)
+    @RequestMapping(value = "/keluarga/tambah", method = RequestMethod.POST)
     public String addKeluargaSubmit ( Model model, @Valid @ModelAttribute KeluargaModel keluarga, BindingResult result)
     {	
     	if(result.hasErrors()) {
@@ -66,10 +65,16 @@ public class KeluargaController {
     	KelurahanModel kelurahan1 = kelurahanDAO.selectKelurahan(Integer.parseInt(keluarga.getId_kelurahan()));
     	
     	String nkk = kelurahan1.getKode_kelurahan().substring(0, 6) + localdate + "0001";
-    	
-    	List<KeluargaModel> listKeluarga = keluargaDAO.selectAllKeluarga(keluarga.getId_kota(), keluarga.getId_kecamatan(), nkk.substring(0,  11));
-    	
-    	Long nkk_baru = Long.parseLong(nkk) + listKeluarga.size() + 1;
+    	Long nkk_baru = Long.parseLong(nkk);
+    	    	
+    	while(true) {
+    		KeluargaModel keluargaCheck = keluargaDAO.selectKeluarga (nkk_baru + "");
+    		if(keluargaCheck != null) {
+    			nkk_baru++;
+    		} else {
+    			break;
+    		}
+    	}
     	
     	keluarga.setNomor_kk(nkk_baru + "");
     	
@@ -120,7 +125,7 @@ public class KeluargaController {
         return "error/not-found-keluarga";
     }
     
-    @RequestMapping(value = "/keluarga/ubah/submit", method = RequestMethod.POST)
+    @RequestMapping(value = "/keluarga/ubah/{nkk}", method = RequestMethod.POST)
     public String updateKeluargaSubmit (Model model, @ModelAttribute KeluargaModel keluarga)
     {	
     	LocalDate date = LocalDate.now();
@@ -138,11 +143,17 @@ public class KeluargaController {
     	if(!nkk_lama.substring(0, 12).equals(nkk_baru)) {
     		for(int i = 0; i < keluargaLama.getAnggota().size(); i++) {
         		String nik_lama = keluargaLama.getAnggota().get(i).getNik();
-        		System.out.println(keluargaLama.getAnggota().get(i).toString());
-        		
-            	List<PendudukModel> listPenduduk = pendudukDAO.selectAllPenduduk(keluargaLama.getAnggota().get(i).getTanggal_lahir(), keluargaLama.getAnggota().get(i).getNama_kota(), keluargaLama.getAnggota().get(i).getNama_kecamatan(), nik_lama.substring(0, 12));
-                
-            	Long nik_baru = Long.parseLong(nkk_baru.substring(0, 6) + nik_lama.substring(6, 12) + "0001") + listPenduduk.size();
+            	Long nik_baru = Long.parseLong(nkk_baru.substring(0, 6) + nik_lama.substring(6, 12) + "0001");
+            	
+            	while(true) {
+            		PendudukModel pendudukCheck = pendudukDAO.selectPenduduk (nik_baru + "");
+            		if(pendudukCheck != null) {
+            			nik_baru++;
+            		} else {
+            			break;
+            		}
+            	}
+            	
             	System.out.println(nik_baru);
         		keluargaLama.getAnggota().get(i).setNik(nik_baru + "");
         		
@@ -151,11 +162,17 @@ public class KeluargaController {
         	}
     	}
     	
-    	List<KeluargaModel> listKeluarga = keluargaDAO.selectAllKeluarga(keluarga.getNama_kota(), keluarga.getNama_kecamatan(), nkk_baru);
+    	Long nkk = Long.parseLong(nkk_baru + "0001");
     	
-    	System.out.println(listKeluarga.size());
+    	while(true) {
+    		KeluargaModel keluargaCheck = keluargaDAO.selectKeluarga (nkk + "");
+    		if(keluargaCheck != null) {
+    			nkk++;
+    		} else {
+    			break;
+    		}
+    	}
     	
-    	Long nkk = Long.parseLong(nkk_baru + "0001") + listKeluarga.size();
     	keluarga.setNomor_kk(nkk + "");
     	
     	System.out.println(keluarga.toString());

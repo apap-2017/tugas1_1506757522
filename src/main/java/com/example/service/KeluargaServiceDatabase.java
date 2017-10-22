@@ -47,10 +47,4 @@ public class KeluargaServiceDatabase implements KeluargaService{
 		keluargaMapper.updateBerlaku(nkk);	
 	}
 
-	@Override
-	public List<KeluargaModel> selectAllKeluarga(String nama_kota, String nama_kecamatan, String nkk) {
-		log.info("List dari keluarga dari kota {} kecamatan {}", nama_kota, nama_kecamatan);
-		return keluargaMapper.selectAllKeluarga(nama_kota, nama_kecamatan, nkk);
-	}
-
 }

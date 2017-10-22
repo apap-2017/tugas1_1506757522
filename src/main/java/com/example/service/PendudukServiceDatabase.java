@@ -25,7 +25,6 @@ public class PendudukServiceDatabase implements PendudukService
         return pendudukMapper.selectPenduduk (nik);
     }
 
-
     public void updatePenduduk (PendudukModel penduduk)
 	{
 		log.info ("penduduk updated");
@@ -44,20 +43,11 @@ public class PendudukServiceDatabase implements PendudukService
 		return pendudukMapper.selectKeluargaPenduduk(id_keluarga);
 	}
 
-
-	@Override
-	public List<PendudukModel> selectAllPenduduk(String tanggal_lahir, String nama_kota, String nama_kecamatan, String nik) {
-		log.info("List dari penduduk dengan tanggal lahir {} dari kota {} kecamatan {}", tanggal_lahir, nama_kota, nama_kecamatan);
-		return pendudukMapper.selectAllPenduduk(tanggal_lahir, nama_kota, nama_kecamatan, nik);
-	}
-
-
 	@Override
 	public void updateWafat(String nik) {
 		pendudukMapper.updateWafat(nik);
 	}
-
-
+	
 	@Override
 	public List<PendudukModel> selectAllPendudukKelurahan(String id_kelurahan) {
 		log.info("select penduduk dari kelurahan dengan id {}", id_kelurahan);

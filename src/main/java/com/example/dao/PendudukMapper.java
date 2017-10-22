@@ -19,13 +19,6 @@ public interface PendudukMapper
     		+ "and kelurahan.id_kecamatan = kecamatan.id and kecamatan.id_kota = kota.id "
     		+ "where nik = #{nik}")
     PendudukModel selectPenduduk (@Param("nik") String nik);
-
-    @Select("select distinct penduduk.nik, penduduk.nama, kota.kode_kota, kota.nama_kota, kecamatan.kode_kecamatan, "
-    		+ "kecamatan.nama_kecamatan from penduduk join kota join kecamatan join kelurahan "
-    		+ "on penduduk.tanggal_lahir = #{tanggal_lahir} and kota.nama_kota = #{nama_kota} and "
-    		+ "kecamatan.nama_kecamatan = #{nama_kecamatan} where penduduk.nik LIKE CONCAT(#{nik}, '%')")
-    List<PendudukModel> selectAllPenduduk (@Param("tanggal_lahir") String tanggal_lahir, @Param("nama_kota") String nama_kota, 
-    		@Param("nama_kecamatan") String nama_kecamatan, @Param("nik") String nik);
         
     @Select("select distinct * from keluarga join kota join kecamatan join kelurahan "
     		+ "on keluarga.id_kelurahan = kelurahan.id and kelurahan.id_kecamatan = kecamatan.id "

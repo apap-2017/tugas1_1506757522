@@ -8,7 +8,7 @@
 		</div>
 	    
 		<div class="container">
-			<form action="/penduduk/tambah/submit" method="post">
+			<form th:action="'/penduduk/tambah/' + ${penduduk.nik}" method="post">
 				<div class="form-group">
 					<label for="nama"> Nama </label> 
 					<input class="form-control" type="text" name="nama" placeholder="Ex: John Doe" />

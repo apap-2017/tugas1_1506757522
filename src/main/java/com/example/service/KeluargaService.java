@@ -16,7 +16,5 @@ public interface KeluargaService {
     List<PendudukModel> selectAnggota_keluarga (String nik);
     
     void updateBerlaku(String nkk);
-    
-    List<KeluargaModel> selectAllKeluarga(String nama_kota, String nama_kecamatan, String nik);
 
 }

@@ -8,7 +8,7 @@
 		</div>
 	    
 		<div class="container">	
-			<form action="/keluarga/ubah/submit" method="post" th:object="${keluarga}">
+			<form th:action="'/keluarga/ubah/' + ${keluarga.nomor_kk}" method="post" th:object="${keluarga}">
 				<div>
 					<input type="hidden" name="nomor_kk" th:value="${nomor_kk}" th:field="*{nomor_kk}" />
 					<input type="hidden" name="id_kelurahan" th:value="${keluarga.id_kelurahan}" th:field="*{id_kelurahan}" />

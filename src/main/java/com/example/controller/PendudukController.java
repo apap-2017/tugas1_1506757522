@@ -54,7 +54,7 @@ public class PendudukController
     }
 
 
-    @RequestMapping(value = "/penduduk/tambah/submit", method = RequestMethod.POST)
+    @RequestMapping(value = "/penduduk/tambah", method = RequestMethod.POST)
     public String addPendudukSubmit (Model model, @ModelAttribute PendudukModel penduduk)
     {	
     	KeluargaModel infoPenduduk = pendudukDAO.selectKeluargaPenduduk(penduduk.getId_keluarga());
@@ -64,11 +64,17 @@ public class PendudukController
     		tanggalTemp[2] = Integer.parseInt(tanggalTemp[2]) + 40 + "";
     	}
     	
-    	String NIK = infoPenduduk.getKode_kecamatan().substring(0,6) + tanggalTemp[2] + tanggalTemp[1] + tanggalTemp[0].substring(2, 4);
-
-    	List<PendudukModel> listPenduduk = pendudukDAO.selectAllPenduduk(penduduk.getTanggal_lahir(), penduduk.getNama_kota(), penduduk.getNama_kecamatan(), NIK.substring(0, 12));
-
-    	Long nik_baru = Long.parseLong(NIK + "0001") + listPenduduk.size();
+    	String NIK = infoPenduduk.getKode_kecamatan().substring(0,6) + tanggalTemp[2] + tanggalTemp[1] + tanggalTemp[0].substring(2, 4) + "0001";
+    	Long nik_baru = Long.parseLong(NIK);
+    	
+    	while(true) {
+    		PendudukModel pendudukCheck = pendudukDAO.selectPenduduk (nik_baru + "");
+    		if(pendudukCheck != null) {
+    			nik_baru++;
+    		} else {
+    			break;
+    		}
+    	}
     	
     	penduduk.setNik(nik_baru + "");
     	
@@ -169,18 +175,31 @@ public class PendudukController
         return "error/not-found-penduduk";
     }
     
-    @RequestMapping(value = "/penduduk/ubah/submit", method = RequestMethod.POST)
+    @RequestMapping(value = "/penduduk/ubah/{nik}", method = RequestMethod.POST)
     public String updatePendudukSubmit (Model model, @ModelAttribute PendudukModel penduduk)
     {	
     	String nik_lama = penduduk.getNik();
     	String tanggalTemp[] = penduduk.getTanggal_lahir().split("-");
     	String nik_tanggal = tanggalTemp[2] +  tanggalTemp[1] +  tanggalTemp[0].substring(2, 4);
-    	List<PendudukModel> listPenduduk = pendudukDAO.selectAllPenduduk(penduduk.getTanggal_lahir(), penduduk.getNama_kota(), penduduk.getNama_kecamatan(), nik_lama.substring(0, 12));
     	
     	if(!nik_lama.substring(6, 12).equals(nik_tanggal)) {
-    		penduduk.setNik(nik_lama.substring(0, 6) + nik_tanggal + "0001" + listPenduduk.size() + "");
+    		nik_tanggal = (nik_lama.substring(0, 6) + nik_tanggal + "0001");
+    	} else {
+    		nik_tanggal = nik_lama;
     	}
-    
+    	
+    	Long nik_baru = Long.parseLong(nik_tanggal);
+    	
+    	while(true) {
+    		PendudukModel pendudukCheck = pendudukDAO.selectPenduduk (nik_baru + "");
+    		if(pendudukCheck != null) {
+    			nik_baru++;
+    		} else {
+    			break;
+    		}
+    	}
+
+    	penduduk.setNik(nik_baru + "");
     	pendudukDAO.updatePenduduk (penduduk);
     	
     	model.addAttribute ("nik_lama", nik_lama);

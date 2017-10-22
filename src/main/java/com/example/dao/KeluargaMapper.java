@@ -43,7 +43,4 @@ public interface KeluargaMapper {
     @Update("UPDATE keluarga SET is_tidak_berlaku = 1")
     void updateBerlaku(@Param("nkk")String nkk);
     
-    @Select("select distinct * from keluarga where keluarga.nomor_kk LIKE CONCAT('${nkk}', '%')")
-    List<KeluargaModel> selectAllKeluarga (@Param("id_kota") String id_kota, @Param("id_kecamatan") String id_kecamatan, 
-    		@Param("nkk") String nkk);
 }
