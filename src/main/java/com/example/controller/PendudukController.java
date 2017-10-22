@@ -136,7 +136,9 @@ public class PendudukController
     @RequestMapping("/penduduk/mati")
     public String pendudukWafat (Model model, @RequestParam(value = "nik") String nik)
     {
-        if(pendudukDAO.selectPenduduk(nik) != null) {
+    	String tanggal = "";
+    	
+    	if(pendudukDAO.selectPenduduk(nik) != null) {
         	PendudukModel penduduk = pendudukDAO.selectPenduduk (nik);
         	List<PendudukModel> anggotaKeluarga = keluargaDAO.selectAnggota_keluarga(penduduk.getNomor_kk());
         	
@@ -152,8 +154,43 @@ public class PendudukController
         		if(count == anggotaKeluarga.size() - 1) {
         			keluargaDAO.updateBerlaku(penduduk.getNomor_kk());
         		}
-        		model.addAttribute ("nik", penduduk.getNik());
-                return "success/success-update-wafat";
+        		
+        		penduduk.setKewarganegaraan(penduduk.getIs_wni());
+            	penduduk.setStatus_kematian(penduduk.getIs_wafat());
+            	String[] tanggalTemp = penduduk.getTanggal_lahir().split("-");
+        		
+        		if(tanggalTemp[1].equals("01")) {
+        			tanggalTemp[1] = "Januari";
+        		} else if(tanggalTemp[1].equals("02")) {
+        			tanggalTemp[1] = "Februari";
+        		} else if(tanggalTemp[1].equals("03")) {
+        			tanggalTemp[1] = "Maret";
+        		} else if(tanggalTemp[1].equals("04")) {
+        			tanggalTemp[1] = "April";
+        		} else if(tanggalTemp[1].equals("05")) {
+        			tanggalTemp[1] = "Mei";
+        		} else if(tanggalTemp[1].equals("06")) {
+        			tanggalTemp[1] = "Juni";
+        		} else if(tanggalTemp[1].equals("07")) {
+        			tanggalTemp[1] = "Juli";
+        		} else if(tanggalTemp[1].equals("08")) {
+        			tanggalTemp[1] = "Agustus";
+        		} else if(tanggalTemp[1].equals("09")) {
+        			tanggalTemp[1] = "September";
+        		} else if(tanggalTemp[1].equals("10")) {
+        			tanggalTemp[1] = "Oktober";
+        		} else if(tanggalTemp[1].equals("11")) {
+        			tanggalTemp[1] = "November";
+        		} else {
+        			tanggalTemp[1] = "Desember";
+        		}
+        		
+        		tanggal = tanggalTemp[2] + " " + tanggalTemp[1] + " " + tanggalTemp[0];
+        		model.addAttribute ("tanggal", tanggal);
+                
+        		
+        		model.addAttribute ("penduduk", penduduk);
+                return "views/view-penduduk";
         	}
         }
         model.addAttribute ("nik", nik);
@@ -181,9 +218,10 @@ public class PendudukController
     	String nik_lama = penduduk.getNik();
     	String tanggalTemp[] = penduduk.getTanggal_lahir().split("-");
     	String nik_tanggal = tanggalTemp[2] +  tanggalTemp[1] +  tanggalTemp[0].substring(2, 4);
+    	KeluargaModel infoPenduduk = pendudukDAO.selectKeluargaPenduduk(penduduk.getId_keluarga());
     	
     	if(!nik_lama.substring(6, 12).equals(nik_tanggal)) {
-    		nik_tanggal = (nik_lama.substring(0, 6) + nik_tanggal + "0001");
+    		nik_tanggal = (infoPenduduk.getKode_kecamatan().substring(0,6) + nik_tanggal + "0001");
     	} else {
     		nik_tanggal = nik_lama;
     	}
